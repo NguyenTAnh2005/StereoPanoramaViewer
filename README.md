@@ -92,7 +92,7 @@ StereoPanoramaViewer/
 | **1** | Dữ liệu đầu vào từ Blender (panorama, cặp trái/phải, depth map) | ✅ Hoàn thành |
 | **2** | Trình xem 360° cơ bản (mặt cầu, điều khiển nhìn quanh)          | ✅ Hoàn thành |
 | **3** | Stereo (hai camera, chia viewport)                              | ✅ Hoàn thành |
-| **4** | Shader displacement theo độ sâu (Shader Graph)                  |  ⬜ Chưa làm  |
+| **4** | Shader displacement theo độ sâu (Shader Graph)                  | ✅ Hoàn thành |
 | **5** | Tịnh tiến đầu, giao diện cài đặt, đo FPS                        |  ⬜ Chưa làm  |
 | **6** | Báo cáo                                                         |  ⬜ Chưa làm  |
 

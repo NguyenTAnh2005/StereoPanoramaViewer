@@ -4,9 +4,9 @@ using UnityEngine;
 public class SphereMeshGenerator:MonoBehaviour
 {
     // Số phần chia theo chiều dọc -> vĩ độ [longitude]
-    public int loSegments = 128;
+    public int loSegments = 512;
     // Số phần chia theo chiều ngang -> kinh độ [latitude]
-    public int laSegments = 64;
+    public int laSegments = 256;
     // Bán kính
     public float radius = 10f;
 
