@@ -150,8 +150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6c6885b341b358429f27f258a587adb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SphereMeshGenerator
-  loSegments: 128
-  laSegments: 64
+  loSegments: 1024
+  laSegments: 512
   radius: 10
 --- !u!23 &37677416
 MeshRenderer:
@@ -220,6 +220,51 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &313873621
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 313873623}
+  - component: {fileID: 313873622}
+  m_Layer: 0
+  m_Name: Stats
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &313873622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313873621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70f37da54d6d9924bbb2601c5afa21d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FPSCounter
+  updateInterval: 0.5
+--- !u!4 &313873623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313873621}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -520,8 +565,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6c6885b341b358429f27f258a587adb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SphereMeshGenerator
-  loSegments: 128
-  laSegments: 64
+  loSegments: 1024
+  laSegments: 512
   radius: 10
 --- !u!23 &655962711
 MeshRenderer:
@@ -654,6 +699,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1110806274}
   - component: {fileID: 1110806273}
+  - component: {fileID: 1110806275}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -691,6 +737,20 @@ Transform:
   - {fileID: 1500138161}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1110806275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110806272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a199c760da24c54cb611a362d90bd9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeadMover
+  moveSpeed: 0.2
+  maxDistance: 0.3
 --- !u!1 &1500138160
 GameObject:
   m_ObjectHideFlags: 0
@@ -837,3 +897,4 @@ SceneRoots:
   - {fileID: 655962713}
   - {fileID: 37677418}
   - {fileID: 1110806274}
+  - {fileID: 313873623}

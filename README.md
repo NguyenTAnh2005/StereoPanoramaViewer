@@ -61,15 +61,10 @@ Dự án xây dựng một trình xem panorama 360° có:
 ```
 StereoPanoramaViewer/
 ├── 📂 Assets/
-│   ├── 🎬 Scenes/        Scene của ứng dụng
 │   ├── 📜 Scripts/       Mã nguồn C# (tạo mesh cầu, camera, UI, ...)
 │   ├── ✨ Shaders/       Shader Graph (displacement theo depth map)
 │   ├── 🎨 Materials/     Material dùng shader trên
 │   ├── 🖼️ Textures/      Ảnh panorama màu (trái/phải) và depth map
-│   ├── 🧱 Prefabs/       Đối tượng dựng sẵn để tái sử dụng (mặt cầu, rig camera, ...)
-│   └── ⚙️ Settings/      Cấu hình URP do Unity tạo
-├── 📦 Packages/          Danh sách package của project
-├── 🔧 ProjectSettings/   Cài đặt project Unity
 ├── 🚫 .gitignore         Bỏ qua Library, Temp, Logs, ... do Unity tự sinh
 └── 📝 README.md
 ```
@@ -93,7 +88,7 @@ StereoPanoramaViewer/
 | **2** | Trình xem 360° cơ bản (mặt cầu, điều khiển nhìn quanh)          | ✅ Hoàn thành |
 | **3** | Stereo (hai camera, chia viewport)                              | ✅ Hoàn thành |
 | **4** | Shader displacement theo độ sâu (Shader Graph)                  | ✅ Hoàn thành |
-| **5** | Tịnh tiến đầu, giao diện cài đặt, đo FPS                        |  ⬜ Chưa làm  |
+| **5** | Tịnh tiến đầu, giao diện cài đặt, đo FPS                        | ✅ Hoàn thành |
 | **6** | Báo cáo                                                         |  ⬜ Chưa làm  |
 
 ---

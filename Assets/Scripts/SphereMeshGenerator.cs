@@ -3,9 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class SphereMeshGenerator:MonoBehaviour
 {
-    // Số phần chia theo chiều dọc -> vĩ độ [longitude]
+    // Số phần chia theo chiều dọc -> kinh độ [longitude]
     public int loSegments = 512;
-    // Số phần chia theo chiều ngang -> kinh độ [latitude]
+    // Số phần chia theo chiều ngang -> vĩ độ [latitude]
     public int laSegments = 256;
     // Bán kính
     public float radius = 10f;
@@ -112,6 +112,17 @@ public class SphereMeshGenerator:MonoBehaviour
 
     void Start()
     {
-        GetComponent<MeshFilter>().mesh = Build();    
+        GetComponent<MeshFilter>().sharedMesh = Build();    
+    }
+
+    public void Rebuild(int lo, int la) {
+        loSegments = lo;
+        laSegments = la;
+
+        MeshFilter filter = GetComponent<MeshFilter>();
+        if(filter.sharedMesh != null) { 
+            Destroy(filter.sharedMesh); 
+        }
+        filter.sharedMesh = Build();
     }
 }
