@@ -7,9 +7,12 @@ using UnityEngine.InputSystem;
 public class HeadMover:MonoBehaviour
 {
     // Tốc độ dịch đầu (m/s)
-    [SerializeField] private float moveSpeed = 0.2f;
+    [SerializeField] private float moveSpeed = 0.3f;
     // Khoảng cách tối đa so với tâm sphere (m)
     [SerializeField] private float maxDistance = 0.3f;
+
+    // Đọc vị trí hiện tại
+    public Vector3 OffsetFromOrigin => transform.position - originPosition;
 
     // Vị trí gốc ( Tâm hình cầu) 
     private Vector3 originPosition;
@@ -61,5 +64,10 @@ public class HeadMover:MonoBehaviour
         // 5. GIỚI HẠN DI CHUYỂN
         Vector3 offset = Vector3.ClampMagnitude(newPosition - originPosition, maxDistance);
         transform.position = originPosition + offset;
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = originPosition;
     }
 }
