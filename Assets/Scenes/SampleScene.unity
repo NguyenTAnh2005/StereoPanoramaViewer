@@ -795,7 +795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a199c760da24c54cb611a362d90bd9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeadMover
-  moveSpeed: 0.2
+  moveSpeed: 0.3
   maxDistance: 0.3
 --- !u!1 &1500138160
 GameObject:
