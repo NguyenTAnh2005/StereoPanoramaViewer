@@ -110,3 +110,9 @@ InitTestScene*.unity*
 
 # Ngăn commit file sao lưu blender
 *.blender1
+
+# report
+# File tạm của Word/PowerPoint khi đang mở
+~$*
+# Bản zip đóng gói (đưa lên Releases, không commit)
+*.zip

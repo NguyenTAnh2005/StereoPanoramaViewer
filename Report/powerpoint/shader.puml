@@ -1,0 +1,31 @@
+@startuml shader_3blocks_simple
+' ===== CẤU HÌNH CHO SLIDE =====
+!$DPI  = 250
+!$FONT = 18
+' ==============================
+skinparam dpi $DPI
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize $FONT
+skinparam ArrowFontSize $FONT
+skinparam linetype ortho
+skinparam shadowing false
+skinparam nodesep 55
+skinparam ranksep 60
+skinparam roundCorner 12
+skinparam rectangleBorderColor #333333
+skinparam arrowColor #333333
+top to bottom direction
+
+rectangle "**1. HƯỚNG**\nNormalize(Position)\n→ vector đơn vị chỉ hướng" as K1 #E3F2FD
+
+rectangle "**2. KHOẢNG CÁCH**\nUV → DepthTex → d\nLerp(Far, Near, d)\n→ bán kính mới" as K2 #FFF3E0
+
+rectangle "**3. GHÉP**\nHướng × Bán kính\n→ vị trí mới của đỉnh" as K3 #E8F5E9
+
+rectangle "**Màu**\nUV → ColorTex → Base Color" as COL #ECEFF1
+
+K1 -down-> K3
+K2 -down-> K3
+COL -[hidden]down- K3
+
+@enduml

@@ -1,5 +1,12 @@
 using UnityEngine;
 
+/// <summary>
+/// Bảng cài đặt vẽ bằng OnGUI ở giữa phía trên màn hình, gồm 3 hàng:
+///   1. Các nút chọn mức chia lưới cầu (gọi SphereMeshGenerator.Rebuild cho cả hai mắt)
+///   2. Thông tin mesh, nút "Reset vị trí" (HeadMover) và nút bật/tắt Displacement (DisplacementControl)
+///   3. Độ lệch vị trí đầu so với gốc (đọc từ HeadMover)
+/// Gắn script này lên một đối tượng (ví dụ "Stats") và gán đủ các tham chiếu trong Inspector.
+/// </summary>
 public class SettingsPanel : MonoBehaviour
 {
     [SerializeField] private SphereMeshGenerator leftSphere;
@@ -15,12 +22,12 @@ public class SettingsPanel : MonoBehaviour
     private bool displacementOn = true;
 
     // Bảng màu
-    private static readonly Color accent = new Color(0.12f, 0.55f, 0.95f);         // xanh dương chủ đạo
-    private static readonly Color panelBg = new Color(0.06f, 0.07f, 0.09f, 0.80f); // nền panel
-    private static readonly Color btnBg = new Color(0.18f, 0.20f, 0.24f, 0.90f);   // nút thường
-    private static readonly Color btnHover = new Color(0.27f, 0.30f, 0.36f, 0.95f);// nút khi rê chuột
-    private static readonly Color onBg = new Color(0.16f, 0.62f, 0.38f, 1f);       // Displacement ON
-    private static readonly Color offBg = new Color(0.65f, 0.25f, 0.25f, 1f);      // Displacement OFF
+    private static readonly Color accent = new Color(0.12f, 0.55f, 0.95f);          // xanh dương chủ đạo
+    private static readonly Color panelBg = new Color(0.06f, 0.07f, 0.09f, 0.80f);  // nền panel
+    private static readonly Color btnBg = new Color(0.18f, 0.20f, 0.24f, 0.90f);    // nút thường
+    private static readonly Color btnHover = new Color(0.27f, 0.30f, 0.36f, 0.95f); // nút khi rê chuột
+    private static readonly Color onBg = new Color(0.16f, 0.62f, 0.38f, 1f);        // Displacement ON
+    private static readonly Color offBg = new Color(0.65f, 0.25f, 0.25f, 1f);       // Displacement OFF
 
     // Các style, tạo một lần ở lần OnGUI đầu tiên
     private GUIStyle panelStyle, buttonStyle, selectedStyle, infoStyle, toggleOnStyle, toggleOffStyle;
@@ -86,16 +93,17 @@ public class SettingsPanel : MonoBehaviour
         // Vùng nội dung, thụt vào so với mép panel
         GUILayout.BeginArea(new Rect(panel.x + 12, panel.y + 10, panel.width - 24, panel.height - 18));
 
-        // Hàng 1: các nút mức mesh
+        // ----- Hàng 1: các nút chọn mức chia lưới -----
         GUILayout.BeginHorizontal();
         for (int i = 0; i < columns.Length; i++)
         {
             int lo = columns[i];
             int la = lo / 2;
-            bool isCurrent = leftSphere.loSegments == lo;
+            bool isCurrent = leftSphere.loSegments == lo;  // mức đang dùng được tô màu accent
 
             if (GUILayout.Button($"{lo}×{la}", isCurrent ? selectedStyle : buttonStyle))
             {
+                // Đổi cùng lúc cho cả hai mắt để hai bên luôn nhất quán
                 leftSphere.Rebuild(lo, la);
                 rightSphere.Rebuild(lo, la);
             }
@@ -104,19 +112,21 @@ public class SettingsPanel : MonoBehaviour
 
         GUILayout.Space(6);
 
-        // Hàng 2: thông tin mesh bên trái; nút Reset và nút Displacement bên phải
+        // ----- Hàng 2: thông tin mesh (trái); nút Reset và nút Displacement (phải) -----
         GUILayout.BeginHorizontal();
+        // Số đỉnh = (cột + 1) × (hàng + 1)
         int vertices = (leftSphere.loSegments + 1) * (leftSphere.laSegments + 1);
         GUILayout.Label($"Mesh {leftSphere.loSegments} × {leftSphere.laSegments}  ·  {vertices:N0} đỉnh / sphere", infoStyle);
         GUILayout.FlexibleSpace();
 
-        // Nút Reset vị trí quan sát
+        // Nút đưa đầu về vị trí quan sát ban đầu
         if (GUILayout.Button("Reset vị trí", buttonStyle, GUILayout.Width(120)))
         {
             if (headMover != null) headMover.ResetPosition();
         }
         GUILayout.Space(8);
 
+        // Nút bật/tắt displacement: xanh lá = ON, đỏ = OFF
         string text = displacementOn ? "Displacement: ON" : "Displacement: OFF";
         if (GUILayout.Button(text, displacementOn ? toggleOnStyle : toggleOffStyle, GUILayout.Width(170)))
         {
@@ -128,7 +138,7 @@ public class SettingsPanel : MonoBehaviour
 
         GUILayout.Space(6);
 
-        // Hàng 3: vị trí đầu so với gốc
+        // ----- Hàng 3: vị trí đầu so với gốc -----
         if (headMover != null)
         {
             Vector3 o = headMover.OffsetFromOrigin;
