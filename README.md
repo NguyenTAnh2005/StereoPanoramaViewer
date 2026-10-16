@@ -62,9 +62,12 @@ Dự án xây dựng một trình xem panorama 360° có:
 
 ### Cách 1: Chạy bản build (không cần cài Unity)
 
-1. Vào mục **Releases** của repo, tải file `.zip` mới nhất: [Tải về](https://github.com/NguyenTAnh2005/StereoPanoramaViewer/releases/tag/StereoPanoramaViewer_v1.0.0)
+1. Vào mục **Releases** của repo, tải file `.zip` mới nhất: - [`Xem StereoPanoramaViewer v1.0.0`](https://github.com/NguyenTAnh2005/StereoPanoramaViewer/releases/tag/StereoPanoramaViewer_v1.0.0) ↗️ _(Giữ Ctrl để mở trong tab mới)_
+
+   ![alt text](image.png)
+
 2. Giải nén **toàn bộ** (giữ nguyên thư mục dữ liệu đi kèm file `.exe`).
-3. Chạy file `.exe`. Yêu cầu: Windows 64-bit, nên có card đồ họa rời để đạt 90+ FPS.
+3. Chạy file `StereoPanoramaViewer.exe`. Yêu cầu: Windows 64-bit, nên có card đồ họa rời để đạt 90+ FPS.
 
 ### Cách 2: Mở project trong Unity
 
