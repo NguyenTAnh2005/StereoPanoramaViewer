@@ -1,28 +1,23 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Mô phỏng xoay đầu bằng chuột (không cần kính VR): giữ chuột phải và rê để xoay.
+/// Chỉ có yaw (trái-phải) và pitch (lên-xuống); KHÔNG có roll vì chuột chỉ có 2 chiều.
+/// Vị trí đầu do HeadMover quản lý, script này chỉ lo góc xoay.
+/// </summary>
 public class HeadController : MonoBehaviour
 {
-    // Mô phỏng chuyển động đầu: 
-    // yaw - trái phải
-    // pitch - lên xuống
-    // KHÔNG mô phòng roll vì chuột chỉ có 2 chiều yaw và pitch
+    // Độ nhạy chuột (độ xoay trên mỗi đơn vị chuột di chuyển)
     [SerializeField] private float sensitivity = 0.1f;
-    private float yaw;
-    private float pitch;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+    private float yaw;    // Góc xoay trái-phải (độ)
+    private float pitch;  // Góc xoay lên-xuống (độ)
+
     void Update()
     {
-        // Ở mỗi frame thì đọc lượng chuột di chuyển
-        // Cộng vào 2 biến yaw và pitch 
-        // pitch giới hạn trong khoảng -89 --> + 89 vì nếu bằng 90 sẽ gây ra hiện tượng gimblock
-        // Biến 2 góc thành một phép xuay rồi gán cho camera
+        // Mỗi frame: đọc lượng chuột di chuyển, cộng vào yaw và pitch,
+        // đổi hai góc thành một phép xoay (Quaternion) rồi gán cho đối tượng.
         Mouse mouse = Mouse.current;
         if (mouse == null) return;
 
@@ -31,6 +26,7 @@ public class HeadController : MonoBehaviour
             Vector2 delta = mouse.delta.ReadValue();
             yaw += delta.x * sensitivity;
             pitch -= delta.y * sensitivity;
+            // Giới hạn pitch trong [-89, 89]: tại ±90° góc Euler suy biến (gimbal lock)
             pitch = Mathf.Clamp(pitch, -89f, 89f);
 
             transform.localRotation = Quaternion.Euler(pitch, yaw, 0f);

@@ -1,105 +1,111 @@
 using UnityEngine;
 
+/// <summary>
+/// Sinh lưới mặt cầu (mesh) bằng code, dùng làm "màn hình" cho ảnh panorama equirectangular.
+/// Mặt tam giác được lật vào trong để camera đặt ở tâm cầu nhìn thấy ảnh.
+/// Có thể dựng lại lưới lúc chạy qua Rebuild() (được SettingsPanel gọi khi đổi mức chia lưới).
+/// </summary>
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class SphereMeshGenerator:MonoBehaviour
+public class SphereMeshGenerator : MonoBehaviour
 {
-    // Số phần chia theo chiều dọc -> kinh độ [longitude]
-    public int loSegments = 512;
-    // Số phần chia theo chiều ngang -> vĩ độ [latitude]
-    public int laSegments = 256;
-    // Bán kính
+    // Số cột: chia quanh đường xích đạo (kinh độ, longitude)
+    public int loSegments = 1024;
+    // Số hàng: chia từ cực Bắc xuống cực Nam (vĩ độ, latitude)
+    public int laSegments = 512;
+    // Bán kính quả cầu (m)
     public float radius = 10f;
 
     Mesh Build()
     {
-        // =============== 1. CẤP PHÁT MẢNG DỮ LIỆU LƯU TRŨ ==========
-        // Tạo danh sách lưu trữ dữ liệu 
-        // vertices: Danh sách các điểm 3D 
-        // uv: mỗi điểm tương ứng với tọa độ vị trí nào trên ảnh 2D (0 -> 1)
+        // =============== 1. CẤP PHÁT MẢNG DỮ LIỆU ===============
+        // vertices: danh sách các điểm 3D
+        // uvs: mỗi điểm tương ứng với vị trí nào trên ảnh 2D (0 -> 1)
         // triangles: danh sách nối điểm nào với điểm nào để thành tam giác
 
-        int cols = loSegments + 1;  // Số đỉnh mỗi hàng ( nhiều hơn số ô 1 đỉnh)
-        int rows = laSegments + 1;  // Số đỉnh mỗi cột 
+        int cols = loSegments + 1;  // Số đỉnh mỗi hàng (nhiều hơn số ô 1 đỉnh)
+        int rows = laSegments + 1;  // Số đỉnh mỗi cột
         Vector3[] vertices = new Vector3[cols * rows];
         Vector2[] uvs = new Vector2[cols * rows];
 
-        // Lưu trữ số thứ tự của các đỉnh vertices, cứ 3 phần tử liên tiếp thì tạo 1 tam giác,
-        // mỗi ô thì được cấu từ 2 tam giác, mỗi tam giác có 3 điểm nên ta x6
+        // Mỗi 3 phần tử liên tiếp của mảng này là chỉ số 3 đỉnh của một tam giác.
+        // Mỗi ô lưới gồm 2 tam giác, mỗi tam giác 3 đỉnh nên nhân 6.
         int[] triangles = new int[loSegments * laSegments * 6];
 
-        // =============== 2. TẠO CÁC ĐỈNH + UV ==========
-        // uv tính dựa trên vị trí tương đổi hiện tại trong lưới
-        // tức là đỉnh đã đi được bao nhiêu phần trăm quãng đường.  
-        // Ví dụ: có tổng 8 ô (ngang hay dọc), đang ở ô thứ 6 -> 6/8 = 0.75
+        // =============== 2. TẠO CÁC ĐỈNH + UV ===============
+        // u, v tính theo vị trí tương đối trong lưới (đã đi được bao nhiêu phần quãng đường).
+        // Ví dụ: tổng 8 ô, đang ở ô thứ 6 thì 6/8 = 0.75.
+        //
+        // Kinh độ (phi): góc đi vòng quanh quả cầu, một vòng đầy đủ là 2π.
+        // Vĩ độ (theta): góc đi từ cực Bắc xuống cực Nam, chỉ cần nửa vòng là π.
+        // Quét phi từ 0 -> 2π và theta từ 0 -> π là đủ phủ kín mặt cầu,
+        // quét nhiều hơn sẽ vẽ trùng điểm, tốn công vô ích.
+        //
+        // Công thức toạ độ (hệ toạ độ cầu -> Descartes):
+        //   x = r * sin(theta) * cos(phi)
+        //   y = r * cos(theta)
+        //   z = r * sin(theta) * sin(phi)
 
-        // Kinh độ (phi) là góc đi vòng quanh quả cầu, như đi một vòng quanh đường xích đạo. Một vòng đầy đủ là 360° = 2π.
-        // Vĩ độ (theta) là góc đi từ cực Bắc xuống cực Nam.Đi dọc một đường kinh tuyến từ cực này sang cực kia chỉ là nửa vòng tròn, tức 180° = π.
-        // Ở bên dưới, khi quét vẽ điểm thì chỉ cần 0 -> π cho vĩ độ và 
-        // 0 -> 2π cho kinh độ là đã đủ để vẽ hẳn full mặt cầu, nếu nhiều hơn
-        // sẽ có hiện tượng vẽ trùng điểm, tốn công.
-        // Công thức tính tọa độ
-        // x = r * sin theta * cos phi
-        // y = r * cos theta
-        // z = r * sin theta * sin phi
-
-        for (int i = 0; i< rows; i++)
-            // i: hàng, đi từ bắc xuống nam
+        for (int i = 0; i < rows; i++)
+        // i: hàng, đi từ cực Bắc xuống cực Nam
         {
-            float v = (float)i / laSegments; // tọa độ v: 0 -> 1
-            float theta = v * Mathf.PI; // Vĩ độ : 0 -> π
+            float v = (float)i / laSegments;  // toạ độ v: 0 -> 1
+            float theta = v * Mathf.PI;       // vĩ độ: 0 -> π
 
             for (int j = 0; j < cols; j++)
-            // j: cột, đi xuay ngang
+            // j: cột, đi vòng quanh theo chiều ngang
             {
-                float u = (float)j / loSegments; // tọa độ u: 0 -> 1
-                float phi = u * 2f * Mathf.PI; // Kinh độ: 0 -> 2π
+                float u = (float)j / loSegments;   // toạ độ u: 0 -> 1
+                float phi = u * 2f * Mathf.PI;     // kinh độ: 0 -> 2π
 
                 int index = i * cols + j;  // lưới 2D -> mảng 1D
                 vertices[index] = new Vector3(
-                    radius * Mathf.Sin(theta) * Mathf.Cos(phi), // x
-                    radius * Mathf.Cos(theta),                  // y
-                    radius * Mathf.Sin(theta) * Mathf.Sin(phi)  // z
-                );
-                // uv đã tính sẵn theo vị trí cột hay hàng tuy nhiên 
-                // Vì dán ảnh vào mặt trong nên u và v  bị đảo ngược nên ta cần 1f - u/v 
-                uvs[index] = new Vector2(
-                    1f-u, 1f - v
+                    radius * Mathf.Sin(theta) * Mathf.Cos(phi),  // x
+                    radius * Mathf.Cos(theta),                   // y
+                    radius * Mathf.Sin(theta) * Mathf.Sin(phi)   // z
                 );
 
+                // Cần lật cả hai trục:
+                //  - 1 - v: v chạy từ cực Bắc xuống, còn v = 0 của texture Unity nằm ở đáy ảnh.
+                //  - 1 - u: camera nhìn từ BÊN TRONG cầu nên ảnh bị đảo trái-phải, lật u để bù lại.
+                uvs[index] = new Vector2(1f - u, 1f - v);
             }
         }
 
-        // =============== 3. NỐI CÁC ĐIỂM THÀNH TAM GIÁC ==========
+        // =============== 3. NỐI CÁC ĐIỂM THÀNH TAM GIÁC ===============
         // Mỗi ô lưới (i, j) có 4 góc:
         //   a ---- b      a: trên-trái    b: trên-phải
         //   |      |      c: dưới-trái    d: dưới-phải
         //   c ---- d
 
-        int t = 0; // Biến trỏ vị trí bên trong mảng triangles
+        int t = 0;  // Con trỏ vị trí trong mảng triangles
         for (int i = 0; i < laSegments; i++)
         {
-            for (int j = 0; j<loSegments; j++)
+            for (int j = 0; j < loSegments; j++)
             {
                 int a = i * cols + j;
-                int b = a + 1;     // Cùng hàng, cột kế bên
-                int c = a + cols; // Cùng cột, hàng kế dưới ( nhảy một hàng = + 1 cols)
+                int b = a + 1;      // Cùng hàng, cột kế bên
+                int c = a + cols;   // Cùng cột, hàng kế dưới (nhảy một hàng = + cols)
                 int d = c + 1;
 
-                // Tam giác 1: a, b, c
-                // Tam giác 1 sau: a, c, b => ảnh lật ngược vào trong => cam nhìn thấy 
+                // Thứ tự đỉnh quyết định mặt nào được vẽ: Unity chỉ vẽ mặt có
+                // các đỉnh xếp THEO CHIỀU KIM ĐỒNG HỒ khi nhìn từ camera.
+                // Thứ tự gốc (a, b, c) quay ra mặt ngoài cầu; đổi thành (a, c, b)
+                // để mặt trong hướng về camera đặt ở tâm.
+
+                // Tam giác 1: a, c, b (gốc là a, b, c)
                 triangles[t++] = a;
                 triangles[t++] = c;
                 triangles[t++] = b;
-                // Tam giác 2: b, d, c
-                // Tam giác 2 sau: b, c, d => tương tự như trên
+                // Tam giác 2: b, c, d (gốc là b, d, c)
                 triangles[t++] = b;
                 triangles[t++] = c;
                 triangles[t++] = d;
             }
         }
 
-        // =============== 4. ĐÓNG GÓI THÀNH MESH ==========
+        // =============== 4. ĐÓNG GÓI THÀNH MESH ===============
         Mesh mesh = new Mesh();
+        // UInt32 để mesh có thể vượt 65.535 đỉnh (mức lưới lớn như 4096x2048 có ~8,4 triệu đỉnh)
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         mesh.vertices = vertices;
         mesh.uv = uvs;
@@ -107,21 +113,24 @@ public class SphereMeshGenerator:MonoBehaviour
         mesh.RecalculateNormals();
 
         return mesh;
-
     }
 
     void Start()
     {
-        GetComponent<MeshFilter>().sharedMesh = Build();    
+        GetComponent<MeshFilter>().sharedMesh = Build();
     }
 
-    public void Rebuild(int lo, int la) {
+    // Dựng lại lưới với số cột/hàng mới (gọi từ SettingsPanel khi đổi mức chia lưới).
+    public void Rebuild(int lo, int la)
+    {
         loSegments = lo;
         laSegments = la;
 
         MeshFilter filter = GetComponent<MeshFilter>();
-        if(filter.sharedMesh != null) { 
-            Destroy(filter.sharedMesh); 
+        // Huỷ mesh cũ để giải phóng bộ nhớ, tránh rò rỉ khi đổi mức liên tục
+        if (filter.sharedMesh != null)
+        {
+            Destroy(filter.sharedMesh);
         }
         filter.sharedMesh = Build();
     }

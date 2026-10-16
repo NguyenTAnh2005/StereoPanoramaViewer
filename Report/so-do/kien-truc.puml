@@ -1,0 +1,99 @@
+@startuml uml_architecture
+' ===== CẤU HÌNH =====
+!$DPI  = 600
+!$FONT = 18
+' ====================
+
+skinparam dpi $DPI
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize $FONT
+skinparam classFontSize $FONT
+skinparam classAttributeFontSize $FONT
+skinparam stereotypeFontSize $FONT
+skinparam arrowFontSize $FONT
+
+' Bố cục & đường vẽ
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 90
+skinparam shadowing false
+skinparam roundCorner 8
+
+' Màu sắc
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #333333
+skinparam classArrowColor #333333
+skinparam classFontColor #111111
+skinparam arrowColor #333333
+skinparam noteBackgroundColor #FFF8DC
+skinparam noteBorderColor #AA8800
+
+' Hướng sơ đồ: dọc từ trên xuống
+top to bottom direction
+
+' ==================== CLASSES ====================
+
+class SettingsPanel <<MonoBehaviour>> {
+  - sphereLeft
+  - sphereRight
+  - dispLeft
+  - dispRight
+  - head : HeadMover
+  + OnGUI()
+}
+
+class SphereMeshGenerator <<MonoBehaviour>> {
+  + loSegments : int
+  + laSegments : int
+  + radius : float
+  - Build() : Mesh
+  + Rebuild(lo : int, la : int)
+}
+
+class DisplacementControl <<MonoBehaviour>> {
+  - material : Material
+  + SetDisplacement(on : bool)
+}
+
+class HeadMover <<MonoBehaviour>> {
+  + moveSpeed : float
+  + maxDistance : float
+  - originPosition : Vector3
+  + OffsetFromOrigin : Vector3
+  + ResetPosition()
+}
+
+class HeadController <<MonoBehaviour>> {
+  - yaw : float
+  - pitch : float
+  + Update()
+}
+
+class FPSCounter <<MonoBehaviour>> {
+  - fps : float
+  - ms : float
+  + OnGUI()
+}
+
+class SG_PanoDisplace <<Shader Graph>> {
+  + ColorTex : Texture2D
+  + DepthTex : Texture2D
+  + NearRadius : float
+  + FarRadius : float
+}
+
+' ==================== RELATIONSHIPS ====================
+
+SettingsPanel -down-> SphereMeshGenerator : gọi Rebuild(lo, la)
+SettingsPanel -down-> DisplacementControl : gọi SetDisplacement(on)
+SettingsPanel -down-> HeadMover : gọi ResetPosition()\nđọc OffsetFromOrigin
+
+DisplacementControl -down-> SG_PanoDisplace : đặt _NearRadius,\n_FarRadius
+
+SphereMeshGenerator ..down.> SG_PanoDisplace : mesh được\nvertex shader dịch đỉnh
+
+' Sắp xếp các class độc lập nằm cạnh nhau (ẩn liên kết)
+HeadController -[hidden]right- HeadMover
+HeadMover     -[hidden]right- FPSCounter
+
+@enduml

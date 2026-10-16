@@ -2,6 +2,8 @@
 
 # 🥽 Stereo Panorama Viewer
 
+![Designed by Claude](https://img.shields.io/badge/designed_by-Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)
+
 ### Trình xem Stereo Panorama Photosphere / Moviesphere với **thị sai độ sâu (Depth Parallax)**
 
 ![Unity](https://img.shields.io/badge/Unity-6000.3.25f1-000000?style=for-the-badge&logo=unity&logoColor=white)
@@ -46,40 +48,71 @@ Dự án xây dựng một trình xem panorama 360° có:
 
 ## 🛠️ Công nghệ sử dụng
 
-| Công nghệ                                    | Vai trò                                                 |
-| -------------------------------------------- | ------------------------------------------------------- |
-| 🎮 **Unity 6 LTS** (`6000.3.25f1`) + **URP** | Nền tảng và pipeline render (Universal Render Pipeline) |
-| 🧩 **Shader Graph**                          | Shader displacement theo depth map                      |
-| 💻 **C#** (Visual Studio)                    | Mô hình hóa mặt cầu, điều khiển camera và giao diện     |
-| 🎨 **Blender**                               | Tạo ảnh panorama màu và depth map đầu vào               |
-| 🔀 **Git / GitHub**                          | Quản lý phiên bản                                       |
-
----
-
-## 📁 Cấu trúc thư mục
-
-```
-StereoPanoramaViewer/
-├── 📂 Assets/
-│   ├── 📜 Scripts/       Mã nguồn C# (tạo mesh cầu, camera, UI, ...)
-│   ├── ✨ Shaders/       Shader Graph (displacement theo depth map)
-│   ├── 🎨 Materials/     Material dùng shader trên
-│   ├── 🖼️ Textures/      Ảnh panorama màu (trái/phải) và depth map
-├── 🚫 .gitignore         Bỏ qua Library, Temp, Logs, ... do Unity tự sinh
-└── 📝 README.md
-```
+| Công nghệ                                    | Vai trò                                                     |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| 🎮 **Unity 6 LTS** (`6000.3.25f1`) + **URP** | Nền tảng và pipeline render (Universal Render Pipeline)     |
+| 🧩 **Shader Graph**                          | Shader displacement theo depth map                          |
+| 💻 **C#** (Visual Studio) + **Input System** | Mô hình hóa mặt cầu, điều khiển đầu (chuột/phím), giao diện |
+| 🎨 **Blender** (Cycles)                      | Tạo ảnh panorama màu (trái/phải) và depth map đầu vào       |
+| 🔀 **Git / GitHub**                          | Quản lý phiên bản                                           |
 
 ---
 
 ## 🚀 Hướng dẫn chạy
 
-> 🚧 `Đang cập nhật .....`
+### Cách 1: Chạy bản build (không cần cài Unity)
+
+1. Vào mục **Releases** của repo, tải file `.zip` mới nhất: [Tải về](...)
+2. Giải nén **toàn bộ** (giữ nguyên thư mục dữ liệu đi kèm file `.exe`).
+3. Chạy file `.exe`. Yêu cầu: Windows 64-bit, nên có card đồ họa rời để đạt 90+ FPS.
+
+### Cách 2: Mở project trong Unity
+
+1. Cài **Unity 6000.3.25f1** (kèm module Windows Build Support).
+2. Clone repo, mở thư mục project bằng Unity Hub.
+3. Mở scene trong `Assets/Scenes/` rồi nhấn Play.
+
+### 🎮 Điều khiển
+
+| Thao tác                      | Chức năng                                              |
+| ----------------------------- | ------------------------------------------------------ |
+| Giữ **chuột phải** + rê chuột | Xoay đầu (yaw / pitch)                                 |
+| **W A S D**                   | Dịch đầu trên mặt phẳng ngang (tối đa 0.3 m quanh gốc) |
+| Các nút `64×32` … `4096×2048` | Đổi mức chia lưới mặt cầu                              |
+| **Displacement: ON/OFF**      | Bật/tắt thị sai theo depth map                         |
+| **Reset vị trí**              | Đưa đầu về vị trí gốc                                  |
+
+---
+
+## 📁 Cấu trúc thư mục
+
+```bash
+StereoPanoramaViewer/
+├── 📂 Assets/
+│   ├── 📜 Scripts/        # Mã nguồn C#
+│   │   ├── SphereMeshGenerator.cs   # Sinh lưới cầu, UV equirectangular, lật mặt vào trong
+│   │   ├── HeadController.cs        # Xoay đầu bằng chuột (yaw/pitch)
+│   │   ├── HeadMover.cs             # Dịch đầu bằng WASD, giới hạn quanh gốc
+│   │   ├── DisplacementControl.cs   # Bật/tắt displacement của shader
+│   │   ├── SettingsPanel.cs         # Giao diện cài đặt (OnGUI)
+│   │   └── FPSCounter.cs            # Hiển thị FPS / ms mỗi frame
+│   ├── ✨ Shaders/        # Shader Graph (displacement theo depth map)
+│   ├── 🎨 Materials/      # Material dùng shader trên
+│   ├── 🖼️ Textures/       # Ảnh panorama màu (trái/phải) và depth map
+│   └── 🎬 Scenes/         # Scene chính
+├── 🎨 BlenderSource/      # File .blend và script build_models.py dựng cảnh test
+├── 📂 Docs/               # Kế hoạch chi tiết ban đầu
+├── 📝 Report/             # Báo cáo (Word) và slide (pptx)
+├── 📦 Builds/             # Bản build (không đưa lên Git, phát hành qua Releases)
+├── 🚫 .gitignore          # Bỏ qua Library, Temp, Logs, Builds, ... do Unity tự sinh
+└── 📝 README.md
+```
 
 ---
 
 ## 🗺️ Tiến độ
 
-📄 [**File kế hoạch chi tiết**](./Docs/chi-tiet-ke-hoach.md)
+📄 [**File kế hoạch chi tiết**](./Docs/chi-tiet-ke-hoach.md) _(kế hoạch ban đầu; tên script và một số thông số thực tế có thể khác, xem mục cấu trúc thư mục ở trên)_
 
 | Chặng | Nội dung                                                        |  Trạng thái   |
 | :---: | --------------------------------------------------------------- | :-----------: |
@@ -89,7 +122,7 @@ StereoPanoramaViewer/
 | **3** | Stereo (hai camera, chia viewport)                              | ✅ Hoàn thành |
 | **4** | Shader displacement theo độ sâu (Shader Graph)                  | ✅ Hoàn thành |
 | **5** | Tịnh tiến đầu, giao diện cài đặt, đo FPS                        | ✅ Hoàn thành |
-| **6** | Báo cáo                                                         |  ⬜ Chưa làm  |
+| **6** | Báo cáo                                                         | ✅ Hoàn thành |
 
 ---
 

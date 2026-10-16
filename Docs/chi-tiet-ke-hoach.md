@@ -2,7 +2,7 @@
 
 # 🗺️ Kế hoạch chi tiết
 
-#### Design by Claude
+![Designed by Claude](https://img.shields.io/badge/designed_by-Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)
 
 ### 🥽 Stereo Panorama Viewer
 

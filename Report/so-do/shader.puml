@@ -1,0 +1,38 @@
+@startuml shader_3blocks
+' ===== CẤU HÌNH (chỉnh ở đây) =====
+!$DPI  = 300
+!$FONT = 15
+' ==================================
+skinparam dpi $DPI
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize $FONT
+skinparam ArrowFontSize $FONT
+skinparam linetype ortho
+skinparam shadowing false
+skinparam nodesep 60
+skinparam ranksep 55
+skinparam roundCorner 10
+skinparam rectangleBorderColor #333333
+skinparam arrowColor #333333
+top to bottom direction
+
+rectangle "**Khối 1: HƯỚNG**\nPosition (Object) → Normalize\n= vectơ đơn vị chỉ hướng của đỉnh\n(đỉnh nhìn về phía nào)" as K1 #E3F2FD
+
+rectangle "**Khối 2: KHOẢNG CÁCH**\nSample Texture 2D LOD (DepthTex, UV0, LOD 0) → lấy kênh R = d\nLerp(FarRadius, NearRadius, d)\n= bán kính mới của đỉnh\n(d = 1 gần, d = 0 xa)" as K2 #FFF3E0
+
+rectangle "**Khối 3: GHÉP**\nMultiply (hướng × bán kính)\n= vị trí mới của đỉnh" as K3 #E8F5E9
+
+rectangle "**Vertex Position**\nP' = Normalize(P) × Lerp(Far, Near, d)" as OUT #F3E5F5
+
+rectangle "Phần màu: Sample Texture 2D (ColorTex, UV0) → Base Color" as COL #ECEFF1
+
+K1 -down-> K3 : hướng
+K2 -down-> K3 : bán kính
+K3 -down-> OUT
+COL -[hidden]down- OUT
+
+note right of K2
+  Dùng bản LOD vì vertex shader
+  không tự chọn được mức mipmap.
+end note
+@enduml

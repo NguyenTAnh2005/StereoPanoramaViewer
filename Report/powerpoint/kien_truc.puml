@@ -1,0 +1,48 @@
+@startuml uml_architecture_simple
+' ===== CẤU HÌNH CHO SLIDE 16:9 =====
+!$DPI  = 400
+!$FONT = 24
+' ====================================
+skinparam dpi $DPI
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize $FONT
+skinparam classFontSize $FONT
+skinparam arrowFontSize $FONT
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 30
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #333333
+skinparam arrowColor #333333
+skinparam roundCorner 8
+left to right direction
+
+
+package "Giao diện & Debug" {
+  class SettingsPanel
+  class FPSCounter
+}
+
+package "Đối tượng người dùng" {
+  class HeadController
+  class HeadMover
+}
+
+package "Hiển thị" {
+  class SphereMeshGenerator
+  class DisplacementControl
+  class SG_PanoDisplace
+}
+
+SettingsPanel --> SphereMeshGenerator
+SettingsPanel --> DisplacementControl
+SettingsPanel --> HeadMover
+
+DisplacementControl --> SG_PanoDisplace
+SphereMeshGenerator ..> SG_PanoDisplace
+
+HeadController -[hidden]down- HeadMover
+FPSCounter -[hidden]down- HeadController
+
+@enduml

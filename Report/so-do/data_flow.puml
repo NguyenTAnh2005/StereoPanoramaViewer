@@ -1,0 +1,97 @@
+@startuml dataflow
+' ===== CẤU HÌNH =====
+!$DPI  = 400
+!$FONT = 16
+' ====================
+
+skinparam dpi $DPI
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize $FONT
+skinparam ArrowFontSize $FONT
+skinparam shadowing false
+skinparam roundCorner 8
+
+' Bố cục & đường vẽ vuông góc
+skinparam linetype ortho
+skinparam nodesep 55
+skinparam ranksep 80
+
+' Màu sắc
+skinparam rectangleBackgroundColor #FFFFFF
+skinparam rectangleBorderColor #333333
+skinparam rectangleFontColor #111111
+skinparam arrowColor #333333
+skinparam arrowFontColor #111111
+
+' Màu riêng cho khối bao PanoramaSphere
+skinparam packageBackgroundColor #F3E5F5
+skinparam packageBorderColor #7B1FA2
+skinparam packageFontColor #4A148C
+
+' Hướng sơ đồ: dọc từ trên xuống
+top to bottom direction
+
+' ==================== KHỐI DỮ LIỆU ====================
+
+rectangle "**Blender (Cycles)**\nCamera panorama equirectangular\nStereo song song, interocular 0,065 m" as B #E3F2FD
+
+rectangle "Pano_L, Pano_R\nẢnh màu 2048×1024" as C #FFF3E0
+rectangle "Depth_L, Depth_R\nẢnh độ sâu 16-bit (gần = trắng)" as D #FFF3E0
+
+rectangle "**Unity: nhập dữ liệu**\nẢnh màu: BC7\nĐộ sâu: R16, tuyến tính,\nPoint, không mipmap" as U #E8F5E9
+
+rectangle "**SphereMeshGenerator**\nMesh cầu lo × la đoạn\n(đổi được lúc chạy)" as M #E8F5E9
+rectangle "**SG_PanoDisplace**\nDịch đỉnh theo độ sâu\nvà lấy màu từ ảnh" as S #E8F5E9
+
+' ---- Khối bao PanoramaSphere ----
+package "PanoramaSphere" as PS {
+  rectangle "PanoramaSphere_Left\nlớp LeftEye" as PL #F3E5F5
+  rectangle "PanoramaSphere_Right\nlớp RightEye" as PR #F3E5F5
+}
+
+rectangle "Left_Camera, Right_Camera\nCùng vị trí trong Head\nChia đôi viewport (split screen)" as CAM #FCE4EC
+
+rectangle "**Màn hình**\nHai ảnh trái / phải" as SCR #ECEFF1
+
+rectangle "Chuột phải: xoay\nWASD: dịch đầu\nCác nút của SettingsPanel" as IN #FFFDE7
+
+' ==================== QUAN HỆ ====================
+
+' Blender → ảnh
+B -down-> C
+B -down-> D
+
+' Ảnh → Unity
+C -down-> U
+D -down-> U
+
+' Unity → Mesh / Shader
+U -down-> M : texture
+U -down-> S : ColorTex, DepthTex
+
+' Mesh + Shader → cặp Sphere (khối bao)
+M -down-> PS
+S -down-> PS
+
+' Cặp Sphere → Camera
+PS -down-> CAM
+
+' Camera → Màn hình
+CAM -down-> SCR
+
+' Input → Camera
+IN -down-> CAM : \ncập nhật vị trí / hướng Head
+
+' ==================== ÉP THỨ TỰ TẦNG ====================
+' Cặp nằm ngang hàng trong cùng tầng
+C -[hidden]right- D
+M -[hidden]right- S
+PL -[hidden]right- PR
+
+' Khóa tầng dọc rõ ràng
+B   -[hidden]down-> C
+U   -[hidden]down-> M
+PS  -[hidden]down-> CAM
+CAM -[hidden]down-> SCR
+
+@enduml

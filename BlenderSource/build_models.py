@@ -1,5 +1,5 @@
 """
-build_scene.py - Tao canh test cho stereo panorama (Blender 4.2, Cycles)
+build_models.py - Tao canh test cho stereo panorama (Blender 4.2, Cycles)
 
 Cach chay: Blender -> tab Scripting -> New -> dan code -> Run Script.
 CANH BAO: script XOA moi mesh trong scene (tru vat ten "Plane") roi tao lai.
@@ -19,7 +19,7 @@ from mathutils import Vector
 # ======================= THAM SO CHINH SUA ==========================
 SEED = 7                 # doi so nay de ra bo cuc khac
 N_NEAR, N_MID, N_FAR = 3, 5, 5
-INTEROCULAR = 0.10       # m (mac dinh Blender 0.065)
+INTEROCULAR = 0.065       # m (mac dinh Blender 0.065)
 CAM_HEIGHT = 1.6         # m
 RES_X, RES_Y = 2048, 1024
 ENABLE_STEREO = True     # True: render cap L/R. Nho TAT khi render depth.
