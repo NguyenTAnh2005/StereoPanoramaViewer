@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 37677417}
   - component: {fileID: 37677416}
   - component: {fileID: 37677415}
+  - component: {fileID: 37677419}
   m_Layer: 7
   m_Name: PanoramaSphere_Right
   m_TagString: Untagged
@@ -225,6 +226,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &37677419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37677414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 759ca47848353184ab0076ccc38b7638, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisplacementControl
+  flatRadius: 10
 --- !u!1 &313873621
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,6 +249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 313873623}
   - component: {fileID: 313873622}
+  - component: {fileID: 313873624}
   m_Layer: 0
   m_Name: Stats
   m_TagString: Untagged
@@ -270,6 +285,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &313873624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313873621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 143ae94e479d83444a3e3c0fac906ec4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsPanel
+  leftSphere: {fileID: 655962710}
+  rightSphere: {fileID: 37677415}
+  leftDisp: {fileID: 655962714}
+  rightDisp: {fileID: 37677419}
+  headMover: {fileID: 1110806275}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,6 +578,7 @@ GameObject:
   - component: {fileID: 655962712}
   - component: {fileID: 655962711}
   - component: {fileID: 655962710}
+  - component: {fileID: 655962714}
   m_Layer: 6
   m_Name: PanoramaSphere_Left
   m_TagString: Untagged
@@ -640,6 +673,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &655962714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655962709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 759ca47848353184ab0076ccc38b7638, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisplacementControl
+  flatRadius: 10
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

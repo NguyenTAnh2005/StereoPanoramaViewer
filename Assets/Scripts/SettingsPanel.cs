@@ -7,17 +7,20 @@ public class SettingsPanel : MonoBehaviour
     [SerializeField] private DisplacementControl leftDisp;
     [SerializeField] private DisplacementControl rightDisp;
 
+    // Tham chiếu để reset và đọc vị trí đầu
+    [SerializeField] private HeadMover headMover;
+
     // Số cột (kinh độ) của từng mức. Số hàng = 1/2 số cột
     private readonly int[] columns = { 64, 128, 256, 512, 1024, 2048, 4096 };
     private bool displacementOn = true;
 
     // Bảng màu
-    private static readonly Color accent = new Color(0.12f, 0.55f, 0.95f);        // xanh dương chủ đạo
+    private static readonly Color accent = new Color(0.12f, 0.55f, 0.95f);         // xanh dương chủ đạo
     private static readonly Color panelBg = new Color(0.06f, 0.07f, 0.09f, 0.80f); // nền panel
-    private static readonly Color btnBg = new Color(0.18f, 0.20f, 0.24f, 0.90f); // nút thường
-    private static readonly Color btnHover = new Color(0.27f, 0.30f, 0.36f, 0.95f); // nút khi rê chuột
-    private static readonly Color onBg = new Color(0.16f, 0.62f, 0.38f, 1f);    // Displacement ON
-    private static readonly Color offBg = new Color(0.65f, 0.25f, 0.25f, 1f);    // Displacement OFF
+    private static readonly Color btnBg = new Color(0.18f, 0.20f, 0.24f, 0.90f);   // nút thường
+    private static readonly Color btnHover = new Color(0.27f, 0.30f, 0.36f, 0.95f);// nút khi rê chuột
+    private static readonly Color onBg = new Color(0.16f, 0.62f, 0.38f, 1f);       // Displacement ON
+    private static readonly Color offBg = new Color(0.65f, 0.25f, 0.25f, 1f);      // Displacement OFF
 
     // Các style, tạo một lần ở lần OnGUI đầu tiên
     private GUIStyle panelStyle, buttonStyle, selectedStyle, infoStyle, toggleOnStyle, toggleOffStyle;
@@ -42,7 +45,7 @@ public class SettingsPanel : MonoBehaviour
         s.hover.textColor = Color.white;
         s.active.textColor = Color.white;
         s.border = new RectOffset(0, 0, 0, 0);   // bỏ viền 9-slice mặc định
-        s.fontSize = 13;
+        s.fontSize = 16;
         s.fontStyle = FontStyle.Bold;
         s.alignment = TextAnchor.MiddleCenter;
         s.fixedHeight = 30;
@@ -60,8 +63,8 @@ public class SettingsPanel : MonoBehaviour
         toggleOffStyle = MakeButtonStyle(offBg, offBg * 1.15f);
 
         infoStyle = new GUIStyle(GUI.skin.label);
-        infoStyle.fontSize = 13;
-        infoStyle.alignment = TextAnchor.MiddleLeft;
+        infoStyle.fontSize = 18;
+        infoStyle.alignment = TextAnchor.MiddleCenter;
         infoStyle.normal.textColor = new Color(0.8f, 0.85f, 0.9f);
         infoStyle.fixedHeight = 30;
     }
@@ -70,9 +73,9 @@ public class SettingsPanel : MonoBehaviour
     {
         if (panelStyle == null) InitStyles();
 
-        // Panel căn giữa, sát mép trên
+        // Panel căn giữa, sát mép trên (cao 120 để đủ 3 hàng)
         float w = Mathf.Max(Screen.width * 0.5f, 600f);
-        Rect panel = new Rect((Screen.width - w) / 2f, 10, w, 88);
+        Rect panel = new Rect((Screen.width - w) / 2f, 10, w, 120);
 
         // Nền + vạch accent ở mép trên
         GUI.Box(panel, GUIContent.none, panelStyle);
@@ -101,11 +104,18 @@ public class SettingsPanel : MonoBehaviour
 
         GUILayout.Space(6);
 
-        // Hàng 2: thông tin mesh bên trái, nút Displacement bên phải
+        // Hàng 2: thông tin mesh bên trái; nút Reset và nút Displacement bên phải
         GUILayout.BeginHorizontal();
         int vertices = (leftSphere.loSegments + 1) * (leftSphere.laSegments + 1);
         GUILayout.Label($"Mesh {leftSphere.loSegments} × {leftSphere.laSegments}  ·  {vertices:N0} đỉnh / sphere", infoStyle);
         GUILayout.FlexibleSpace();
+
+        // Nút Reset vị trí quan sát
+        if (GUILayout.Button("Reset vị trí", buttonStyle, GUILayout.Width(120)))
+        {
+            if (headMover != null) headMover.ResetPosition();
+        }
+        GUILayout.Space(8);
 
         string text = displacementOn ? "Displacement: ON" : "Displacement: OFF";
         if (GUILayout.Button(text, displacementOn ? toggleOnStyle : toggleOffStyle, GUILayout.Width(170)))
@@ -115,6 +125,15 @@ public class SettingsPanel : MonoBehaviour
             rightDisp.SetDisplacement(displacementOn);
         }
         GUILayout.EndHorizontal();
+
+        GUILayout.Space(6);
+
+        // Hàng 3: vị trí đầu so với gốc
+        if (headMover != null)
+        {
+            Vector3 o = headMover.OffsetFromOrigin;
+            GUILayout.Label($"Vị trí đầu (so với gốc):  X: [{o.x:F3}]   Y: [{o.y:F3}]   Z: [{o.z:F3}]  m", infoStyle);
+        }
 
         GUILayout.EndArea();
     }
