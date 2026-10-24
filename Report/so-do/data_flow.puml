@@ -13,8 +13,8 @@ skinparam roundCorner 8
 
 ' Bố cục & đường vẽ vuông góc
 skinparam linetype ortho
-skinparam nodesep 55
-skinparam ranksep 80
+skinparam nodesep 30
+skinparam ranksep 50
 
 ' Màu sắc
 skinparam rectangleBackgroundColor #FFFFFF
@@ -36,7 +36,7 @@ top to bottom direction
 rectangle "**Blender (Cycles)**\nCamera panorama equirectangular\nStereo song song, interocular 0,065 m" as B #E3F2FD
 
 rectangle "Pano_L, Pano_R\nẢnh màu 2048×1024" as C #FFF3E0
-rectangle "Depth_L, Depth_R\nẢnh độ sâu 16-bit (gần = trắng)" as D #FFF3E0
+rectangle "Depth_L, Depth_R\nẢnh độ sâu 16-bit (gần = trắng)\nZ pass → Map Range 0 – 20 m" as D #FFF3E0
 
 rectangle "**Unity: nhập dữ liệu**\nẢnh màu: BC7\nĐộ sâu: R16, tuyến tính,\nPoint, không mipmap" as U #E8F5E9
 
@@ -66,7 +66,7 @@ C -down-> U
 D -down-> U
 
 ' Unity → Mesh / Shader
-U -down-> M : texture
+U -down-> M : Texture
 U -down-> S : ColorTex, DepthTex
 
 ' Mesh + Shader → cặp Sphere (khối bao)
@@ -80,7 +80,7 @@ PS -down-> CAM
 CAM -down-> SCR
 
 ' Input → Camera
-IN -down-> CAM : \ncập nhật vị trí / hướng Head
+IN -down-> CAM : cập nhật vị trí / hướng Head
 
 ' ==================== ÉP THỨ TỰ TẦNG ====================
 ' Cặp nằm ngang hàng trong cùng tầng

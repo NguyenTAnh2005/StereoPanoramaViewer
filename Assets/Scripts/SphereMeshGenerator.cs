@@ -35,15 +35,15 @@ public class SphereMeshGenerator : MonoBehaviour
         // u, v tính theo vị trí tương đối trong lưới (đã đi được bao nhiêu phần quãng đường).
         // Ví dụ: tổng 8 ô, đang ở ô thứ 6 thì 6/8 = 0.75.
         //
-        // Kinh độ (phi): góc đi vòng quanh quả cầu, một vòng đầy đủ là 2π.
-        // Vĩ độ (theta): góc đi từ cực Bắc xuống cực Nam, chỉ cần nửa vòng là π.
+        // Kinh độ (phi - φ): góc đi vòng quanh quả cầu, một vòng đầy đủ là 2π.
+        // Vĩ độ (theta - θ): góc đi từ cực Bắc xuống cực Nam, chỉ cần nửa vòng là π.
         // Quét phi từ 0 -> 2π và theta từ 0 -> π là đủ phủ kín mặt cầu,
         // quét nhiều hơn sẽ vẽ trùng điểm, tốn công vô ích.
         //
         // Công thức toạ độ (hệ toạ độ cầu -> Descartes):
-        //   x = r * sin(theta) * cos(phi)
-        //   y = r * cos(theta)
-        //   z = r * sin(theta) * sin(phi)
+        //   x = r * sin(θ) * cos(φ)
+        //   y = r * cos(θ)
+        //   z = r * sin(θ) * sin(φ)
 
         for (int i = 0; i < rows; i++)
         // i: hàng, đi từ cực Bắc xuống cực Nam
@@ -90,7 +90,7 @@ public class SphereMeshGenerator : MonoBehaviour
                 // Thứ tự đỉnh quyết định mặt nào được vẽ: Unity chỉ vẽ mặt có
                 // các đỉnh xếp THEO CHIỀU KIM ĐỒNG HỒ khi nhìn từ camera.
                 // Thứ tự gốc (a, b, c) quay ra mặt ngoài cầu; đổi thành (a, c, b)
-                // để mặt trong hướng về camera đặt ở tâm.
+                // vì để mặt trong hướng về camera đặt ở tâm.
 
                 // Tam giác 1: a, c, b (gốc là a, b, c)
                 triangles[t++] = a;
