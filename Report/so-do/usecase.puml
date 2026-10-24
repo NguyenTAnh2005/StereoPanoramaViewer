@@ -1,0 +1,59 @@
+@startuml
+!$DPI = 400
+!$FONT = 18
+skinparam dpi $DPI
+skinparam defaultFontSize $FONT
+
+top to bottom direction
+skinparam nodesep 30 
+skinparam ranksep 30
+skinparam linetype spline
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam actorStyle stick
+skinparam ArrowColor #333333
+skinparam usecase {
+  BackgroundColor #EAF2FB
+  BorderColor #1F3A5F
+  FontColor #000000
+}
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #1F3A5F
+  FontColor #000000
+}
+
+actor "Người dùng" as User
+
+rectangle "Stereo Panorama Viewer" {
+  usecase "Quan sát\npanorama stereo" as UC1
+  usecase "Xoay hướng nhìn\n(giữ chuột phải kéo)" as UC2
+  usecase "Dịch chuyển đầu\n(phím WASD, ≤ 0,3 m)" as UC3
+  usecase "Đặt lại\nvị trí đầu" as UC4
+  usecase "Bật/tắt\nhiệu ứng displacement" as UC5
+  usecase "Đổi mức độ\nphân giải mesh" as UC6
+  usecase "Xem chỉ số FPS" as UC7
+  usecase "Xem toạ độ\nđầu X, Y, Z" as UC8
+
+  UC1 -[hidden]down-> UC2
+  UC2 -[hidden]down-> UC3
+  UC3 -[hidden]down-> UC4
+  UC4 -[hidden]down-> UC5
+  UC5 -[hidden]down-> UC6
+  UC6 -[hidden]down-> UC7
+  UC7 -[hidden]down-> UC8
+}
+
+User -right-> UC1
+User -right-> UC2
+User -right-> UC3
+User -right-> UC4
+User -right-> UC5
+User -right-> UC6
+User -right-> UC7
+User -right-> UC8
+
+UC2 ..up.> UC1 : <<extend>>
+UC3 ..up.> UC1 : <<extend>>
+UC4 ..up.> UC3 : <<extend>>
+@enduml

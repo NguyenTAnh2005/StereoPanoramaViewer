@@ -1,0 +1,67 @@
+@startuml activity
+' ===== CẤU HÌNH =====
+!$DPI  = 400
+!$FONT = 16
+' ====================
+
+skinparam dpi $DPI
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize $FONT
+skinparam ArrowFontSize $FONT
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam nodesep 30
+skinparam ranksep 30
+
+skinparam ActivityBackgroundColor #FFFFFF
+skinparam ActivityBorderColor #333333
+skinparam ActivityFontColor #111111
+skinparam ArrowColor #333333
+skinparam ArrowFontColor #111111
+skinparam ActivityDiamondBackgroundColor #FFFDE7
+skinparam ActivityDiamondBorderColor #333333
+skinparam PartitionBorderColor #666666
+skinparam PartitionFontColor #111111
+skinparam ActivityStartColor #333333
+skinparam ActivityEndColor #333333
+
+start
+
+partition "**Khởi tạo (một lần)**" {
+  split
+    #E8F5E9:SphereMeshGenerator tạo mesh cầu\n(lo × la đoạn);
+  split again
+    #E8F5E9:HeadMover lưu vị trí xuất phát;
+  split again
+    #E8F5E9:FPSCounter tắt VSync,\nbỏ giới hạn FPS;
+  end split
+}
+
+partition "**Mỗi khung hình**" {
+  repeat
+    split
+      if (Giữ chuột phải?) then (có)
+        #E3F2FD:HeadController cập nhật yaw, pitch\n(pitch giới hạn ±89°);
+      endif
+    split again
+      if (Nhấn W/A/S/D?) then (có)
+        #E3F2FD:HeadMover dịch đầu\n(tốc độ 0,2 — tối đa 0,3 m);
+      endif
+    split again
+      if (Bấm nút SettingsPanel?) then (có)
+        #E3F2FD:Đổi mức mesh, bật/tắt displacement\nhoặc reset vị trí;
+      endif
+    end split
+
+    split
+      #FCE4EC:Left/Right Camera dựng hình\n(mỗi mắt một nửa màn hình);
+    split again
+      #FCE4EC:GPU shader dịch đỉnh theo độ sâu,\nlấy màu từ ảnh;
+    split again
+      #ECEFF1:FPSCounter tính FPS trung bình\nmỗi 0,5 giây;
+    end split
+  repeat while (Ứng dụng còn chạy?) is (có) not (không)
+}
+
+stop
+@enduml

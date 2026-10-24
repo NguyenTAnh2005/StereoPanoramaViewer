@@ -1,7 +1,7 @@
 @startuml uml_architecture
 ' ===== CẤU HÌNH =====
-!$DPI  = 600
-!$FONT = 18
+!$DPI  = 400
+!$FONT = 20
 ' ====================
 
 skinparam dpi $DPI
@@ -12,14 +12,12 @@ skinparam classAttributeFontSize $FONT
 skinparam stereotypeFontSize $FONT
 skinparam arrowFontSize $FONT
 
-' Bố cục & đường vẽ
-skinparam linetype ortho
+skinparam linetype polyline
 skinparam nodesep 60
 skinparam ranksep 90
 skinparam shadowing false
 skinparam roundCorner 8
 
-' Màu sắc
 skinparam classBackgroundColor #FFFFFF
 skinparam classBorderColor #333333
 skinparam classArrowColor #333333
@@ -28,17 +26,16 @@ skinparam arrowColor #333333
 skinparam noteBackgroundColor #FFF8DC
 skinparam noteBorderColor #AA8800
 
-' Hướng sơ đồ: dọc từ trên xuống
 top to bottom direction
 
 ' ==================== CLASSES ====================
 
 class SettingsPanel <<MonoBehaviour>> {
-  - sphereLeft
-  - sphereRight
-  - dispLeft
-  - dispRight
-  - head : HeadMover
+  - leftSphere, rightSphere : SphereMeshGenerator
+  - leftDisp, rightDisp : DisplacementControl
+  - headMover : HeadMover
+  - columns : int[]
+  - displacementOn : bool
   + OnGUI()
 }
 
@@ -51,49 +48,61 @@ class SphereMeshGenerator <<MonoBehaviour>> {
 }
 
 class DisplacementControl <<MonoBehaviour>> {
-  - material : Material
+  - flatRadius : float
+  - nearOrigin : float
+  - farOrigin : float
   + SetDisplacement(on : bool)
 }
 
 class HeadMover <<MonoBehaviour>> {
-  + moveSpeed : float
-  + maxDistance : float
+  - moveSpeed : float
+  - maxDistance : float
   - originPosition : Vector3
-  + OffsetFromOrigin : Vector3
+  + OffsetFromOrigin : Vector3 {readOnly}
   + ResetPosition()
 }
 
 class HeadController <<MonoBehaviour>> {
+  - sensitivity : float
   - yaw : float
   - pitch : float
-  + Update()
 }
 
 class FPSCounter <<MonoBehaviour>> {
+  - updateInterval : float
   - fps : float
-  - ms : float
+  - frameMs : float
   + OnGUI()
+}
+
+class Head <<GameObject>> {
+}
+
+class Camera <<Unity>> {
 }
 
 class SG_PanoDisplace <<Shader Graph>> {
   + ColorTex : Texture2D
   + DepthTex : Texture2D
-  + NearRadius : float
-  + FarRadius : float
+  + _NearRadius : float
+  + _FarRadius : float
 }
 
 ' ==================== RELATIONSHIPS ====================
 
-SettingsPanel -down-> SphereMeshGenerator : gọi Rebuild(lo, la)
-SettingsPanel -down-> DisplacementControl : gọi SetDisplacement(on)
+SettingsPanel "1" -down-> "2" SphereMeshGenerator : gọi Rebuild(lo, la)
+SettingsPanel "1" -down-> "2" DisplacementControl : gọi SetDisplacement(on)
 SettingsPanel -down-> HeadMover : gọi ResetPosition()\nđọc OffsetFromOrigin
 
 DisplacementControl -down-> SG_PanoDisplace : đặt _NearRadius,\n_FarRadius
+SphereMeshGenerator ..down.> SG_PanoDisplace : mesh dùng chung\nmaterial của shader
 
-SphereMeshGenerator ..down.> SG_PanoDisplace : mesh được\nvertex shader dịch đỉnh
+HeadController -down-> Head : xoay (yaw, pitch)
+HeadMover -down-> Head : dịch vị trí
+Head "1" *-down- "2" Camera : chứa
 
-' Sắp xếp các class độc lập nằm cạnh nhau (ẩn liên kết)
+' Sắp xếp
+SettingsPanel -[hidden]right- FPSCounter
 HeadController -[hidden]right- HeadMover
-HeadMover     -[hidden]right- FPSCounter
 
 @enduml
